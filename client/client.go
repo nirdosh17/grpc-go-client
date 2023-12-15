@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"time"
 
 	pb "github.com/nirdosh17/protorepo/greet/lib/go"
@@ -14,16 +15,16 @@ import (
 var rpcServerEndpoint string = "0.0.0.0:5051"
 
 func main() {
-	tls := false
+	tls := os.Getenv("TLS")
 	opts := []grpc.DialOption{}
 
-	if tls {
+	if tls == "true" {
 		certFile := "ssl/ca.crt"
 		creds, err := credentials.NewClientTLSFromFile(certFile, "")
 		if err != nil {
 			log.Fatalln("error while loading CA trust cert", err)
 		}
-
+		log.Println("TLS enabled")
 		opts = append(opts, grpc.WithTransportCredentials(creds))
 	} else {
 		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -36,10 +37,15 @@ func main() {
 	defer conn.Close()
 
 	client := pb.NewGreetServiceClient(conn)
+	log.Println("")
 	greet(client)
+	log.Println("")
 	greetManyTimes(client)
+	log.Println("")
 	longGreet(client)
+	log.Println("")
 	greetEveryOne(client)
+	log.Println("")
 	// must wait more than 3 seconds
 	greetWithDeadline(client, 4*time.Second)
 }

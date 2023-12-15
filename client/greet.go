@@ -15,7 +15,7 @@ func greet(c pb.GreetServiceClient) {
 	)
 
 	if err != nil {
-		log.Fatalln("err from RPC call:", err)
+		log.Fatalln("Greet RPC failed:", err)
 	}
-	log.Println("Greet rpc response: ", resp.Result)
+	log.Println("Greet RPC response: ", resp.Result)
 }
